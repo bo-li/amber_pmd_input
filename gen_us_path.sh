@@ -46,6 +46,12 @@ end ncsu_pmd
 EOF
 }
 
+print_pbs_job_script()
+{
+    cp ../job01.pbs ./
+    sed -i "s/"#"PBS "-"N */"#"PBS "-"N "$1"/g" ./job01.pbs
+}
+
 create_input()
 {
     # must avoid furth dashing
@@ -53,6 +59,7 @@ create_input()
     cd "./$1"
     print_main_md_input
     print_pmd_input "$1"
+    print_pbs_job_script "$1"
     cd ../
 }
 
