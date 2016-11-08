@@ -36,10 +36,10 @@ ncsu_pmd
   output_freq = 50
 
   variable
-    type = LCAO
+    type = LCOD
     i = (36,37,4,37)
     r = (1.0, -1.0)
-    anchor_position = "$1"
+    anchor_position = $1
     anchor_strength = 50.0
   end variable
 end ncsu_pmd
@@ -49,7 +49,7 @@ EOF
 print_pbs_job_script()
 {
     cp ../job01.pbs ./
-    sed -i "s/"#"PBS "-"N */"#"PBS "-"N "$1"/g" ./job01.pbs
+    sed -i "s/pmd_path2/pmd_path2_"$1"/g" ./job01.pbs
 }
 
 create_input()
@@ -60,12 +60,21 @@ create_input()
     print_main_md_input
     print_pmd_input "$1"
     print_pbs_job_script "$1"
+    cp ../smd_mm.rst ./
+    cp ../model.prmtop ./
     cd ../
 }
 
 clean_input()
 {
     rm -rf "./$1"
+}
+
+submit_job()
+{
+    cd "./$1"
+    qsub job01.pbs
+    cd ../
 }
 
 cv_lo=-0.97
@@ -83,6 +92,9 @@ do
 	;;
     "clean")
 	clean_input "${cv_path[$i]}"
+	;;
+    "submit")
+	submit_job "${cv_path[$i]}"
 	;;
     *) echo "unknown options"
 	;;
