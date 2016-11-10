@@ -77,6 +77,21 @@ submit_job()
     cd ../
 }
 
+analyse_overlap()
+{
+    cd "./$1"
+    cp pmd.txt ../analyse_overlap/"$1".txt
+    cd ../
+}
+
+build_wham_input()
+{
+    cd "./$1"
+    cp pmd.txt ../wham_res/"$1".txt
+    echo ""$1".txt "$1" 50" >> ../wham_res/metadata.dat
+    cd ../
+}
+
 cv_lo=-0.97
 cv_hi=2.03
 cv_step=0.1
@@ -95,6 +110,17 @@ do
 	;;
     "submit")
 	submit_job "${cv_path[$i]}"
+	;;
+    "analyse")
+        mkdir -p analyse_overlap
+	analyse_overlap "${cv_path[$i]}"
+	cd analyse_overlap
+	echo "`ls`" > ./files.dat
+	cd ../
+	;;
+    "wham")
+	mkdir -p wham_res
+	build_wham_input "${cv_path[$i]}"
 	;;
     *) echo "unknown options"
 	;;
