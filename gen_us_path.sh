@@ -86,14 +86,23 @@ analyse_overlap()
 
 build_wham_input()
 {
+    workdir=`pwd`
     cd "./$1"
-    cp pmd.txt ../wham_res/"$1".txt
-    echo ""$1".txt "$1" 50" >> ../wham_res/metadata.dat
+    cp pmd.txt $workdir/wham_res/"$1".txt
+    echo ""$1".txt "$1" 50" >> $workdir/wham_res/metadata.dat
+    cd ../
+}
+
+zip_mdcrd()
+{
+    cd "./$1"
+    gzip -9 -v pmd.mdcrd
+    echo "Done zipping with "$1""
     cd ../
 }
 
 cv_lo=-0.97
-cv_hi=2.03
+cv_hi=3.03
 cv_step=0.1
 opt="$1"
 
@@ -121,6 +130,9 @@ do
     "wham")
 	mkdir -p wham_res
 	build_wham_input "${cv_path[$i]}"
+	;;
+    "zip")
+	zip_mdcrd "${cv_path[$i]}"
 	;;
     *) echo "unknown options"
 	;;
